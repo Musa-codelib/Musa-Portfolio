@@ -1,4 +1,5 @@
 import { portfolio } from "../data/portfolio";
+import clientPromise from "../lib/mongodb";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Highlights from "../components/Highlights";
@@ -8,14 +9,18 @@ import MkodesBlock from "../components/MkodesBlock";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
 
+export const dynamic = "force-dynamic";
+
+async function getDb() {
+  const client = await clientPromise;
+  return client.db("portfolio");
+}
+
 async function getProjects() {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/projects`,
-      { cache: "no-store" }
-    );
-    const data = await res.json();
-    return data?.length ? data : null;
+    const db = await getDb();
+    const data = await db.collection("projects").find({}).sort({ createdAt: -1 }).toArray();
+    return data.length ? JSON.parse(JSON.stringify(data)) : null;
   } catch {
     return null;
   }
@@ -23,12 +28,9 @@ async function getProjects() {
 
 async function getSkills() {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/skills`,
-      { cache: "no-store" }
-    );
-    const data = await res.json();
-    return data?.length ? data : null;
+    const db = await getDb();
+    const data = await db.collection("skills").find({}).sort({ order: 1 }).toArray();
+    return data.length ? JSON.parse(JSON.stringify(data)) : null;
   } catch {
     return null;
   }
@@ -36,12 +38,9 @@ async function getSkills() {
 
 async function getBio() {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/bio`,
-      { cache: "no-store" }
-    );
-    const data = await res.json();
-    return data?.bio ? data : null;
+    const db = await getDb();
+    const data = await db.collection("bio").findOne({});
+    return data?.bio ? JSON.parse(JSON.stringify(data)) : null;
   } catch {
     return null;
   }
@@ -49,12 +48,9 @@ async function getBio() {
 
 async function getHighlights() {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/highlights`,
-      { cache: "no-store" }
-    );
-    const data = await res.json();
-    return data?.length ? data : null;
+    const db = await getDb();
+    const data = await db.collection("highlights").find({ active: true }).sort({ createdAt: -1 }).toArray();
+    return data.length ? JSON.parse(JSON.stringify(data)) : null;
   } catch {
     return null;
   }
