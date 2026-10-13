@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overscroll-behavior: none;
+}
+
+section[id] {
+  scroll-margin-top: 64px;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #fafaf5;
+  color: #1a1c19;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 48px -6px rgba(0, 0, 0, 0.18), 0 12px 24px -4px rgba(0, 0, 0, 0.14) !important;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 50%; }
+  50% { background-position: 100% 0%; }
+  75% { background-position: 0% 0%; }
+  100% { background-position: 0% 50%; }
+}
